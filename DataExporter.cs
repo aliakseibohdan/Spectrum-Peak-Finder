@@ -9,7 +9,7 @@ namespace PeakFinder
 {
     public class DataExporter
     {
-        public static void WriteDataToFile(string filePath, IReadOnlyList<float> valuesX, IReadOnlyList<float> valuesY)
+        private static void WriteDataToFile(string filePath, IReadOnlyList<float> valuesX, IReadOnlyList<float> valuesY)
         {
             try
             {
@@ -37,6 +37,9 @@ namespace PeakFinder
             }
         }
 
+        /// <summary>
+        /// Exports spectral data to a .dat file as two columns (x-axis values and y-axis values, respectively)
+        /// </summary>
         public static void ExportData(Spectrum spectrum, string outputFilePath)
         {
             WriteDataToFile(outputFilePath, spectrum.ValuesX, spectrum.ValuesY);

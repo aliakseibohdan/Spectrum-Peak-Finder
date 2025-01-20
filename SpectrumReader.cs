@@ -10,6 +10,10 @@ namespace PeakFinder
 {
     public class SpectrumReader
     {
+        /// <summary>
+        /// Assumes that there is one entry per line of two values separated by a space
+        /// </summary>
+        /// <returns> <see cref="Spectrum"/> object; invalid entries will be skipped when creating the spectrum </returns>
         public static Spectrum ReadSpectrumDataFromFile(string filePath)
         {
             Spectrum spectrum = new Spectrum();
@@ -29,6 +33,12 @@ namespace PeakFinder
                             {
                                 float x = Single.Parse(values[0], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture);
                                 float y = Single.Parse(values[1], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture);
+
+                                if (y <= 0)
+                                {
+                                    Console.WriteLine($"Skipping invalid Y value (non-positive): {y}");
+                                    continue;
+                                }
 
                                 spectrum.AddDataPoint(x, MathF.Log10(y));
                             }

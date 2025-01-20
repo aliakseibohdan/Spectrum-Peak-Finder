@@ -14,32 +14,34 @@ namespace PeakFinder
         {
             #region Read spectrum
 
-            string fileName = "GaAs004.dat";
-            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            string inputFilePath = Path.Combine(projectDirectory, @"Data\", fileName);
+            var fileName = "GaAs004.dat";
+            var projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+            var inputFilePath = Path.Combine(projectDirectory, @"Data\", fileName);
 
-            Spectrum spectrum = SpectrumReader.ReadSpectrumDataFromFile(inputFilePath);
+            var spectrum = SpectrumReader.ReadSpectrumDataFromFile(inputFilePath);
 
             #endregion
 
             #region Smooth data
 
-            int windowSize = 5;
-            int polyOrder = 2;
+            var windowSize = 5;
+            var polyOrder = 2;
 
-            Spectrum smoothedSpectrum = SavitzkyGolayFilter.ApplySavitzkyGolayFilter(spectrum, windowSize, polyOrder);
+            var smoothedSpectrum = SavitzkyGolayFilter.ApplySavitzkyGolayFilter(spectrum, windowSize, polyOrder);
 
             #endregion
 
             #region Find peaks
 
-            IReadOnlyList<int> peaks = SpectrumPeakFinder.FindPeaks(smoothedSpectrum);
+            var peaks = SpectrumPeakFinder.FindPeaks(smoothedSpectrum);
+
+            // Nothing is done with the peaks at this point; later they will be overlaid on a smoothed graph of the function
 
             #endregion
 
             #region Export data
 
-            string outputFilePath = $"Smoothed_{Path.GetFileNameWithoutExtension(inputFilePath)}.dat";
+            var outputFilePath = $"Smoothed_{Path.GetFileNameWithoutExtension(inputFilePath)}.dat";
 
             DataExporter.ExportData(smoothedSpectrum, outputFilePath);
 

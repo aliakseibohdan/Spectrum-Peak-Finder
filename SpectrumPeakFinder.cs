@@ -8,10 +8,15 @@ namespace PeakFinder
 {
     public class SpectrumPeakFinder
     {
+        /// <summary>
+        /// Finds peaks in a spectrum by calculating the second derivative using finite differences
+        /// </summary>
+        /// <param name="spectrum"> Smoothing should be applied beforehand </param>
+        /// <returns> A list of x-axis values corresponding to the peaks; an empty list if there are not enough points to find the peaks </returns>
         public static IReadOnlyList<int> FindPeaks(Spectrum spectrum)
         {
             int n = spectrum.ValuesX.Count;
-            IReadOnlyList<int> peakIndices = new List<int>().AsReadOnly();
+            List<int> peakIndices = new List<int>();
 
             if (n < 3)
             {
@@ -27,15 +32,16 @@ namespace PeakFinder
                 secondDerivative[i] = spectrum.ValuesY[i - 1] - 2 * spectrum.ValuesY[i] + spectrum.ValuesY[i + 1];
             }
 
+            // Identify peaks based on the second derivative
             for (int i = 1; i < n - 1; i++)
             {
                 if (secondDerivative[i - 1] > 0 && secondDerivative[i] < 0)
                 {
-                    peakIndices.Append(i);
+                    peakIndices.Add(i);
                 }
             }
 
-            return peakIndices;
+            return peakIndices.AsReadOnly();
         }
     }
 }
