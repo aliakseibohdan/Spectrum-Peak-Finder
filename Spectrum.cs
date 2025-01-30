@@ -8,22 +8,56 @@ namespace PeakFinder
 {
     public class Spectrum
     {
-        private List<float> valuesX;
-        public IReadOnlyList<float> ValuesX { get { return valuesX; } }
+        public double[] ValuesX { get; private set; }
+        public double[] ValuesY { get; private set; }
 
-        private List<float> valuesY;
-        public IReadOnlyList<float> ValuesY { get { return valuesY; } }
-
-        public Spectrum()
+        public Spectrum(int size)
         {
-            valuesX = new List<float>();
-            valuesY = new List<float>();
+            if (size <= 0)
+            {
+                throw new ArgumentException("Size must be greater than zero.", nameof(size));
+            }
+
+            ValuesX = new double[size];
+            ValuesY = new double[size];
         }
 
-        public void AddDataPoint(float x, float y)
+        public void AddDataPoint(double x, double y)
         {
-            valuesX.Add(x); 
-            valuesY.Add(y);
+            int index = Array.FindIndex(ValuesX, value => value == 0);
+            if (index == -1)
+            {
+                throw new InvalidOperationException("The spectrum arrays are full. Cannot add more data points.");
+            }
+
+            ValuesX[index] = x;
+            ValuesY[index] = y;
+        }
+
+        public void Resize(int newSize)
+        {
+            if (newSize <= ValuesX.Length)
+            {
+                throw new ArgumentException("New size must be greater than the current size.", nameof(newSize));
+            }
+
+            Array.Resize(ref ValuesX, newSize);
+            Array.Resize(ref ValuesY, newSize);
+        }
+
+        public List<(double, double)> GetDataPoints()
+        {
+            var dataPoints = new List<(double, double)>();
+
+            for (int i = 0; i < ValuesX.Length; i++)
+            {
+                if (ValuesX[i] != 0)
+                {
+                    dataPoints.Add((ValuesX[i], ValuesY[i]));
+                }
+            }
+
+            return dataPoints;
         }
     }
 }

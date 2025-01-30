@@ -27,15 +27,15 @@ namespace PeakFinder
             var windowSize = 5;
             var polyOrder = 2;
 
-            var smoothedSpectrum = SavitzkyGolayFilter.ApplySavitzkyGolayFilter(spectrum, windowSize, polyOrder);
+            var filter = new SavitzkyGolayFilter(windowSize, polyOrder);
+            var smoothedValuesY = filter.Process(spectrum.ValuesY);
 
             #endregion
 
             #region Find peaks
 
-            var peaks = SpectrumPeakFinder.FindPeaks(smoothedSpectrum);
-
-            // Nothing is done with the peaks at this point; later they will be overlaid on a smoothed graph of the function
+            var windowHalfWidth = 2;
+            var peaks = SpectrumPeakFinder.SearchPeaks(spectrum.ValuesX, smoothedValuesY, windowHalfWidth);
 
             #endregion
 
@@ -43,7 +43,7 @@ namespace PeakFinder
 
             var outputFilePath = $"Smoothed_{Path.GetFileNameWithoutExtension(inputFilePath)}.dat";
 
-            DataExporter.ExportData(smoothedSpectrum, outputFilePath);
+            //DataExporter.ExportData(smoothedValuesY, outputFilePath);
 
             #endregion
         }
